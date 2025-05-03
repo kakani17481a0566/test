@@ -120,22 +120,24 @@ namespace test.Services.User
         }
 
         // Handle user login with plain-text password
-        public async Task<(bool isSuccessful, string message)> LoginAsync(string identifier, string password)
+        public async Task<(bool isSuccessful, string message, string userName)> LoginAsync(string identifier, string password)
         {
             var user = await _context.Users
-                .Include(u => u.Role)  // Include Role entity to get Role Name
+                .Include(u => u.Role)  // Include Role entity if needed
                 .FirstOrDefaultAsync(u =>
                     u.Email == identifier ||  // Check if identifier matches email
                     u.Phone == identifier ||  // Check if identifier matches phone number
                     u.LoginId == identifier);  // Check if identifier matches loginId
 
             if (user == null)
-                return (false, "User not found");
+                return (false, "User not found", null);
 
-            if (user.Password != password)  // Check if the provided password matches
-                return (false, "Invalid password");
+            if (user.Password != password)
+                return (false, "Invalid password", null);
 
-            return (true, "Login successful");  // Return success if credentials match
+            return (true, "Login successful", user.LoginId);  // Ensure 'UserName' is correct
         }
+
+
     }
 }

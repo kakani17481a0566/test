@@ -10,7 +10,10 @@ namespace test.Services.User
         Task<UserModel> CreateUserAsync(UserCreateViewModel userCreateViewModel); // Changed to UserCreateViewModel
         Task<bool> UpdateUserAsync(int id, UserViewModel userViewModel);
         Task<bool> DeleteUserAsync(int id);
-        Task<(bool isSuccessful, string message)> LoginAsync(string identifier, string password);
+
+        // Update LoginAsync method to include the userName in the return tuple
+        Task<(bool isSuccessful, string message, string userName)> LoginAsync(string identifier, string password);
+
         Task<bool> RoleExistsAsync(int roleId);
     }
 }

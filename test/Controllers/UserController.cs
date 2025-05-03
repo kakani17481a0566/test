@@ -85,16 +85,17 @@ namespace test.Controllers
         public async Task<IActionResult> Login([FromForm] string identifier, [FromForm] string password)
         {
             _logger.LogInformation("Attempting login for {Identifier}", identifier);
-            var (isSuccessful, message) = await _userService.LoginAsync(identifier, password);
+            var (isSuccessful, message, userName) = await _userService.LoginAsync(identifier, password);  // Deconstruct the 3 elements
 
             if (isSuccessful)
             {
-                return Ok(new { success = true, message = message ?? "Login successful." });
+                return Ok(new { success = true, message = message ?? "Login successful.", userName });  // Return userName
             }
 
             _logger.LogWarning("Failed login attempt for {Identifier}: {Message}", identifier, message);
             return Unauthorized(new { success = false, message = message ?? "Invalid credentials." });
         }
+
 
         // PUT: api/User/{id}
         [HttpPut("{id}")]
