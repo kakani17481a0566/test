@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using test.Data;
+using test.Services.Lead;
 using test.Services.Roles;
 using test.Services.User; // Add this to bring in UserService
 
@@ -14,8 +15,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register application services
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<LeadService>();
+builder.Services.AddScoped<LeadServiceSummary>();
 
-// Add controllers
+
+// Add controllers  
 builder.Services.AddControllers();
 
 // Add Swagger/OpenAPI
