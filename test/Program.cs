@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using test.Data;
 using test.Services.Lead;
 using test.Services.Roles;
-using test.Services.User; // Add this to bring in UserService
+using test.Services.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,11 +18,19 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<LeadService>();
 builder.Services.AddScoped<LeadServiceSummary>();
 
+// Add CORS - allow all origins (use only for development!)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
-// Add controllers  
+// Add controllers and Swagger
 builder.Services.AddControllers();
-
-// Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -38,6 +46,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Use CORS before authorization
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
