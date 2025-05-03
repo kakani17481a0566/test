@@ -27,28 +27,29 @@ namespace test.Services.Lead
                 .Include(l => l.Branch)
                 .Include(l => l.School)
                 .ToListAsync();
-
             var leadVMs = leads.Select(l => new LeadVM
             {
+                Id = l.Id, 
                 LeadName = l.Name,
                 ContactNumber = l.ContactNumber,
                 LeadSourceId = l.LeadSourceId,
-                LeadSourceName = l.LeadSource.Name,
+                LeadSourceName = l.LeadSource?.Name,
                 BranchId = l.BranchId,
-                BranchName = l.Branch.BranchName,
+                BranchName = l.Branch?.BranchName,
                 SchoolId = l.SchoolId,
-                SchoolName = l.School.Name,
+                SchoolName = l.School?.Name,
                 LeadTypeId = l.LeadTypeId,
-                LeadTypeName = l.LeadType.Type,
+                LeadTypeName = l.LeadType?.Type,
                 DateTime = l.DateTime,
                 Converted = l.Converted,
                 SalesPersonId = l.SalesPersonId,
                 LeadListId = l.LeadListId,
                 StatusId = l.StatusId,
-                StatusName = l.Status.Name,
+                StatusName = l.Status?.Name,
                 OwnerId = l.OwnerId,
-                OwnerName = $"{l.Owner.FirstName} {l.Owner.LastName}"
+                OwnerName = l.Owner != null ? $"{l.Owner.FirstName} {l.Owner.LastName}" : null
             }).ToList();
+
 
             return leadVMs;
         }
@@ -74,6 +75,8 @@ namespace test.Services.Lead
 
             var leadVM = new LeadVM
             {
+
+                Id = lead.Id,
                 LeadName = lead.Name,
                 ContactNumber = lead.ContactNumber,
                 LeadSourceId = lead.LeadSourceId,
