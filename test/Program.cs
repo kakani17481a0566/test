@@ -1,15 +1,24 @@
+using Microsoft.EntityFrameworkCore;
+using test.Data;
+using test.Services.Roles;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Configure PostgreSQL database context
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
+// Register services
+builder.Services.AddScoped<IRoleService, RoleService>();
+
+// Add controllers and Swagger
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Enable Swagger in development environment
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
