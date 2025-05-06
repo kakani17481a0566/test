@@ -12,7 +12,7 @@ namespace test.Services.User
         Task<bool> DeleteUserAsync(int id);
 
         // Update LoginAsync method to include the userName in the return tuple
-        Task<(bool isSuccessful, string message, string userName)> LoginAsync(string identifier, string password);
+        Task<loginVm> LoginAsync(string identifier, string password);
 
         Task<bool> RoleExistsAsync(int roleId);
     }

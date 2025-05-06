@@ -253,7 +253,26 @@ namespace test.Controllers
         public async Task<IActionResult> GetLeadCountBySource()
         {
             var result = await _leadService.GetLeadCountBySourceAsync();
-            return Ok(result);
+
+            List<LeadSourceVM> sources = new List<LeadSourceVM>();
+
+            int i = -1;
+            foreach (var item in result)
+            {
+                LeadSourceVM leadSource = new LeadSourceVM()
+                {
+                    name = item.SourceName,
+                    uid = (++i).ToString(),
+                    logo = "/images/logos/tumblr-round.svg",
+                    impression = item.TotalLeads,
+                    views = "10k"
+                };
+                sources.Add(leadSource);
+
+
+            }
+
+            return Ok(sources);
         }
 
         // GET: api/LeadSummary/LeadCountByBranch
@@ -268,7 +287,26 @@ namespace test.Controllers
             {
                 return NotFound("No data found for lead count by branch.");
             }
-            return Ok(leadCountByBranch);
+
+            List<BranchResponseVM> branches = new List<BranchResponseVM>();
+
+            int i = -1;
+            foreach (var item in leadCountByBranch)
+            {
+                BranchResponseVM leadSource = new BranchResponseVM()
+                {
+                    name = item.BranchName,
+                    uid = (++i).ToString(),
+                    flag = "/images/flags/svg/rounded/india.svg",
+                    totalCount = item.TotalCount,
+                    convertedCount = item.ConvertedCount
+                };
+                branches.Add(leadSource);
+
+
+            }
+
+            return Ok(branches);
         }
 
 

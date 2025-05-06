@@ -120,24 +120,50 @@ namespace test.Services.User
         }
 
         // Handle user login with plain-text password
-        public async Task<(bool isSuccessful, string message, string userName)> LoginAsync(string identifier, string password)
+        public async Task<loginVm> LoginAsync(string identifier, string password)
         {
+            var loginvm = new loginVm();
+
+            // Find the user by identifier (email, phone, or login ID)
             var user = await _context.Users
-                .Include(u => u.Role)  // Include Role entity if needed
+                .Include(u => u.Role)  // Include Role to retrieve role information
                 .FirstOrDefaultAsync(u =>
-                    u.Email == identifier ||  // Check if identifier matches email
-                    u.Phone == identifier ||  // Check if identifier matches phone number
-                    u.LoginId == identifier);  // Check if identifier matches loginId
+                    u.Email == identifier ||
+                    u.Phone == identifier ||
+                    u.LoginId == identifier);
 
+            // If user not found
             if (user == null)
-                return (false, "User not found", null);
+            {
+                loginvm.Message = "User not found";
+                loginvm.Status = false;
+            }
+            // If password is incorrect
+            else if (user.Password != password)
+            {
+                loginvm.Message = "Invalid password";
+                loginvm.Status = false;
+            }
+            else
+            {
+                loginvm.Message = "Login successful";
+                loginvm.Status = true;
 
-            if (user.Password != password)
-                return (false, "Invalid password", null);
+                // Map UserModel to UserDto
+                loginvm.User = new UserDto
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName, // Using FirstName from UserModel
+                    LastName = user.LastName,   // Using LastName from UserModel
+                    Email = user.Email,
+                    Phone = user.Phone,
 
-            return (true, "Login successful", user.LoginId);  // Ensure 'UserName' is correct
+
+                };
+            }
+
+            return loginvm;
         }
-
 
     }
 }
